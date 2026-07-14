@@ -60,10 +60,11 @@ export async function runAgent(
   // Resume most recent session, or start fresh
   let sessionManager: SessionManager;
   try {
-    const result = SessionManager.continueRecent(tenantDir);
-    sessionManager = result.sessionManager;
+    sessionManager = SessionManager.continueRecent(tenantDir);
+    console.log(`[agent] ${tenant}: resumed session`);
   } catch {
     sessionManager = SessionManager.create(tenantDir);
+    console.log(`[agent] ${tenant}: new session`);
   }
 
   const modelRegistry = getModelRegistry();
