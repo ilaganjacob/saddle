@@ -1,0 +1,17 @@
+[Unit]
+Description=Saddle Agent Platform
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/saddle
+ExecStart=/opt/saddle/node_modules/.bin/tsx src/server.mts
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
