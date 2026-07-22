@@ -6,6 +6,7 @@ let nextId = 1;
 export function useChat(tenant: string) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentTool, setCurrentTool] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export function useChat(tenant: string) {
       const agentMsg: Message = { id: String(nextId++), role: 'agent', text: '' };
       setMessages((prev) => [...prev, userMsg, agentMsg]);
       setLoading(true);
+      setCurrentTool(null);
 
       const controller = new AbortController();
       abortRef.current = controller;
@@ -62,6 +64,10 @@ export function useChat(tenant: string) {
                   m.id === agentMsg.id ? { ...m, text: m.text + delta } : m,
                 ),
               );
+            } else if (line.startsWith('data: ') && eventType === 'tool_start') {
+              setCurrentTool(JSON.parse(line.slice(6)) as string);
+            } else if (line.startsWith('data: ') && eventType === 'tool_end') {
+              setCurrentTool(null);
             }
           }
         }
@@ -77,6 +83,7 @@ export function useChat(tenant: string) {
         }
       } finally {
         setLoading(false);
+        setCurrentTool(null);
         abortRef.current = null;
       }
     },
@@ -87,5 +94,5 @@ export function useChat(tenant: string) {
     abortRef.current?.abort();
   }, []);
 
-  return { messages, loading, send, abort };
+  return { messages, loading, currentTool, send, abort };
 }
