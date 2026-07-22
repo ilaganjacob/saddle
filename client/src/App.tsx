@@ -1,9 +1,15 @@
+import MessageList from './components/MessageList';
+
 function App() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <span style={styles.title}>Saddle</span>
       </header>
+      <MessageList messages={[
+        { id: '1', role: 'user', text: 'Hello' },
+        { id: '2', role: 'agent', text: 'Hi there! How can I help?' },
+      ]} />
     </div>
   );
 }
