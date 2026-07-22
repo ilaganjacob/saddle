@@ -1,17 +1,38 @@
+import { useState } from 'react';
 import MessageList from './components/MessageList';
 import ChatInput from './components/ChatInput';
+import type { Message } from './types';
+
+let nextId = 1;
 
 function App() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  function handleSend(text: string) {
+    const userMsg: Message = { id: String(nextId++), role: 'user', text };
+    setMessages((prev) => [...prev, userMsg]);
+    setLoading(true);
+
+    setTimeout(() => {
+      const agentMsg: Message = {
+        id: String(nextId++),
+        role: 'agent',
+        text: '(coming soon)',
+      };
+      setMessages((prev) => [...prev, agentMsg]);
+      setLoading(false);
+    }, 500);
+  }
+
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <span style={styles.title}>Saddle</span>
+        {loading && <span style={styles.status}>Thinking...</span>}
       </header>
-      <MessageList messages={[
-        { id: '1', role: 'user', text: 'Hello' },
-        { id: '2', role: 'agent', text: 'Hi there! How can I help?' },
-      ]} />
-      <ChatInput onSend={(text) => console.log(text)} />
+      <MessageList messages={messages} />
+      <ChatInput onSend={handleSend} disabled={loading} />
     </div>
   );
 }
@@ -33,6 +54,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
   },
   title: { fontSize: 14, fontWeight: 600, color: '#58a6ff' },
+  status: { fontSize: 12, color: '#8b949e' },
 };
 
 export default App;
