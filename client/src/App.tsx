@@ -1,29 +1,9 @@
-import { useState } from 'react';
 import MessageList from './components/MessageList';
 import ChatInput from './components/ChatInput';
-import type { Message } from './types';
-
-let nextId = 1;
+import { useChat } from './hooks/useChat';
 
 function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  function handleSend(text: string) {
-    const userMsg: Message = { id: String(nextId++), role: 'user', text };
-    setMessages((prev) => [...prev, userMsg]);
-    setLoading(true);
-
-    setTimeout(() => {
-      const agentMsg: Message = {
-        id: String(nextId++),
-        role: 'agent',
-        text: '(coming soon)',
-      };
-      setMessages((prev) => [...prev, agentMsg]);
-      setLoading(false);
-    }, 500);
-  }
+  const { messages, loading, send } = useChat('default');
 
   return (
     <div style={styles.container}>
@@ -32,7 +12,7 @@ function App() {
         {loading && <span style={styles.status}>Thinking...</span>}
       </header>
       <MessageList messages={messages} />
-      <ChatInput onSend={handleSend} disabled={loading} />
+      <ChatInput onSend={send} disabled={loading} />
     </div>
   );
 }
