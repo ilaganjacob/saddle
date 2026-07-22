@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { Message } from '../types';
 
 interface Props {
@@ -5,6 +6,12 @@ interface Props {
 }
 
 function MessageList({ messages }: Props) {
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <div style={styles.container}>
       {messages.map((msg) => (
@@ -18,6 +25,7 @@ function MessageList({ messages }: Props) {
           {msg.text}
         </div>
       ))}
+      <div ref={bottomRef} />
     </div>
   );
 }
