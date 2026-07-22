@@ -1,15 +1,28 @@
+import { useState } from 'react';
 import MessageList from './components/MessageList';
 import ChatInput from './components/ChatInput';
+import TenantSwitcher from './components/TenantSwitcher';
 import { useChat } from './hooks/useChat';
+import type { Tenant } from './types';
+
+const TENANTS: Tenant[] = [
+  { name: 'personal', label: 'Personal' },
+  { name: 'htss', label: 'HTSS' },
+  { name: 'elm', label: 'ELM' },
+];
 
 function App() {
-  const { messages, loading, send } = useChat('default');
+  const [tenant, setTenant] = useState('personal');
+  const { messages, loading, send } = useChat(tenant);
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <span style={styles.title}>Saddle</span>
-        {loading && <span style={styles.status}>Thinking...</span>}
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {loading && <span style={styles.status}>Thinking...</span>}
+          <TenantSwitcher tenants={TENANTS} active={tenant} onChange={setTenant} />
+        </div>
       </header>
       <MessageList messages={messages} />
       <ChatInput onSend={send} disabled={loading} />

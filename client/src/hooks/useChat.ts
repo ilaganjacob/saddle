@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Message } from '../types';
 
 let nextId = 1;
@@ -7,6 +7,10 @@ export function useChat(tenant: string) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    setMessages([]);
+  }, [tenant]);
 
   const send = useCallback(
     async (text: string) => {
