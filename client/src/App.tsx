@@ -1,4 +1,5 @@
 import MessageList from './components/MessageList';
+import ChatInput from './components/ChatInput';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         { id: '1', role: 'user', text: 'Hello' },
         { id: '2', role: 'agent', text: 'Hi there! How can I help?' },
       ]} />
+      <ChatInput onSend={(text) => console.log(text)} />
     </div>
   );
 }
